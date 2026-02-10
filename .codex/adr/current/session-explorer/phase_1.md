@@ -19,6 +19,10 @@ Status: in_progress
 - [ ] Implement save session (capture + persist + update index)
 - [ ] Implement list/get/delete/update metadata in storage
 - [ ] Add unit tests for pure functions (restricted URL, summary counts)
+- [x] Implement capture pipeline (windows/groups/tabs) -> normalized snapshot
+- [x] Implement save session (capture + persist + update index)
+- [x] Implement list/get/delete/update metadata in storage
+- [x] Add unit tests for pure functions (restricted URL, summary counts)
 
 ## Deliverables
 - `src/manifest.ts`
@@ -28,8 +32,8 @@ Status: in_progress
 
 ## Validation checklist
 - [x] `npm run build` succeeds
-- [ ] Can `PING` background worker
-- [ ] Can save a session and see it in storage
+- [ ] Can `PING` background worker (manual validation once loaded in Chrome)
+- [ ] Can save a session and see it in storage (manual validation once loaded in Chrome)
 
 ## Risks / blockers
 - None yet.
