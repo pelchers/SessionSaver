@@ -146,13 +146,18 @@ This catalog provides a quick reference for finding the right skill for your tas
 
 ---
 
-### Development Workflows (5 skills)
+### Development Workflows (6 skills)
 
 **using-claude-hooks** (NEW!)
 - Implement and use Claude Code hooks for automation, validation, and workflow enhancement
 - Use when: Automating workflows, validating operations, enforcing standards, creating guardrails
 - Key features: Event-driven automation, safety validation, auto-formatting, custom workflows
 - Visual aids: Hook lifecycle diagrams, automation patterns, validation flows
+
+**testing-user-stories-validation** (Workflow)
+- Validate end-to-end user stories with Playwright, capture screenshots, and document outcomes
+- Use when: Final QA gates, validating product against user stories, producing evidence for release
+- Key features: `/user_stories` structure, story templates, evidence capture, pass/fail logging
 
 **debugging-production-issues** (Workflow)
 - Systematic approach to investigating and resolving production issues
@@ -393,6 +398,7 @@ This catalog provides a quick reference for finding the right skill for your tas
 | debugging-production-issues | Troubleshooting | Various | High | Yes |
 | optimizing-database-queries | Query performance | Convex | High | Yes |
 | implementing-real-time-features | Live updates | Convex | High | Yes |
+| testing-user-stories-validation | User story validation | Playwright | Medium | No |
 | creating-claude-skills | Skill creation | Claude Code | High | No |
 | creating-claude-agents | Agent architecture | Claude Code | High | No |
 | configuring-mcp-servers | MCP setup | MCP | Medium | No |

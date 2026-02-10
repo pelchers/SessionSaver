@@ -58,6 +58,15 @@
 - Integration (mock Chrome APIs):
   - Save -> list -> open detail -> restore (plan execution mocked)
 
+## User Story Validation (Required Final Gate)
+
+- Maintain `/user_stories/user_stories.md` as the source-of-truth story list.
+- Each story must have:
+  - `/user_stories/<story_slug>/story.md`
+  - `/user_stories/<story_slug>/validation/validation.md`
+  - evidence screenshots captured during validation
+- Run validation using `.codex/agents/user-story-testing-agent.md` with the `testing-user-stories-validation` workflow.
+
 ## Performance Checks (Manual)
 
 - Capture time for 200 tabs

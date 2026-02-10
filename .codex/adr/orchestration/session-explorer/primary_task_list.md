@@ -140,6 +140,7 @@ Acceptance gates:
 
 Outcomes:
 - Product is stable, accessible, and ready for store submission.
+- User stories are validated end-to-end with documented evidence.
 
 Tasks:
 - Performance:
@@ -156,6 +157,12 @@ Tasks:
 - QA:
   - execute `.docs/planning/QA-Test-Plan.md`
   - regressions fixed
+- User story validation (required final gate):
+  - maintain `/user_stories/user_stories.md` master list of stories
+  - ensure each story has `/user_stories/<story_slug>/story.md`
+  - run `user-story-testing-agent` to validate each story end-to-end with Playwright
+  - capture evidence screenshots under `/user_stories/<story_slug>/validation/`
+  - record pass/fail + notes in `/user_stories/<story_slug>/validation/validation.md`
 - Release readiness:
   - permissions review
   - privacy statement
@@ -163,6 +170,7 @@ Tasks:
 
 Acceptance gates:
 - Manual QA matrix completed without P1 issues.
+- All user stories in `/user_stories/user_stories.md` have a completed validation log with evidence (or an explicit failure record and follow-up).
 - Accessibility checklist passes baseline keyboard usage.
 - Release checklist complete.
 

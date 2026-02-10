@@ -31,6 +31,10 @@
   - restore plan builder (pure)
   - tree model builder
 - Integration tests with mocked Chrome APIs for key flows.
+- User story validation (required for final phase):
+  - `/user_stories/user_stories.md` master list
+  - per-story `story.md` + validation evidence
+  - execute via `.codex/agents/user-story-testing-agent.md` using `testing-user-stories-validation`
 
 ## Deployment
 
