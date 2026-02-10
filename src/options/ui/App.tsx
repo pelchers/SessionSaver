@@ -1,5 +1,7 @@
 import React from "react";
 import { Link, Route, Routes } from "react-router-dom";
+import LibraryPage from "./pages/LibraryPage";
+import SessionPage from "./pages/SessionPage";
 
 export default function App(): JSX.Element {
   return (
@@ -13,29 +15,10 @@ export default function App(): JSX.Element {
       </header>
       <main className="main">
         <Routes>
-          <Route path="/" element={<LibraryPlaceholder />} />
-          <Route path="/session/:id" element={<SessionPlaceholder />} />
+          <Route path="/" element={<LibraryPage />} />
+          <Route path="/session/:id" element={<SessionPage />} />
         </Routes>
       </main>
     </div>
   );
 }
-
-function LibraryPlaceholder(): JSX.Element {
-  return (
-    <div className="card">
-      <h1>Library</h1>
-      <p>Scaffold complete. Phase 1 will implement session capture and storage.</p>
-    </div>
-  );
-}
-
-function SessionPlaceholder(): JSX.Element {
-  return (
-    <div className="card">
-      <h1>Session</h1>
-      <p>Explorer tree UI will land in Phase 3.</p>
-    </div>
-  );
-}
-
