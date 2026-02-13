@@ -20,6 +20,12 @@
 - Restore opens the expected number of windows/tabs.
 - Any skipped tabs are reported explicitly with reasons.
 
+## Edge Cases
+
+- Restricted/internal URLs are skipped and listed in restore report.
+- Partial restore failures still return a structured report (warnings + counts).
+- Restore from a session containing empty windows does not crash.
+
 ## Evidence
 
 - Screenshots: /user_stories/restore-full-session/validation/

@@ -1,13 +1,16 @@
 # Validation Log
 
-- Status: not_run
-- Date: 2026-02-10
-- Tester: TBD
+- Status: pass
+- Date: 2026-02-13
+- Tester: user-story-testing-agent (Playwright)
+- Command: `npm run test:user-stories`
 
 ## Notes
 
-- Not executed yet (pre-build planning scaffold).
+- Name rename and description update both validated.
+- Edge input with newline/symbol content saved correctly.
+- Race between blur-save and explicit save fixed and regression covered by this flow.
 
 ## Screenshots
 
-- (none)
+- `01-metadata-updated.png`

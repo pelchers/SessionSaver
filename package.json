@@ -7,10 +7,12 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint .",
+    "lint": "eslint src",
     "format": "prettier -w .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:user-stories": "playwright test tests/user-stories/user-stories.spec.ts",
+    "prelaunch:check": "npm run lint && npm run test && npm run test:user-stories && npm run build"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -19,6 +21,7 @@
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0",
+    "@playwright/test": "^1.58.2",
     "@types/chrome": "^0.0.277",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
@@ -35,4 +38,3 @@
     "vitest": "^2.1.8"
   }
 }
-

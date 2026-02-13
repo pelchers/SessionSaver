@@ -20,6 +20,12 @@
 - The session shows non-zero window/tab counts matching the current browser state.
 - The session has correct timestamps (created/updated).
 
+## Edge Cases
+
+- User enters only whitespace for `Name`: save must fail with clear validation.
+- User enters long descriptions with punctuation/newlines: save must still succeed.
+- Save is clicked twice quickly: only one new row should appear per accepted request.
+
 ## Evidence
 
 - Screenshots: /user_stories/save-session/validation/

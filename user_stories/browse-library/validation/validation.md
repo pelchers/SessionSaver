@@ -1,13 +1,17 @@
 # Validation Log
 
-- Status: not_run
-- Date: 2026-02-10
-- Tester: TBD
+- Status: pass
+- Date: 2026-02-13
+- Tester: user-story-testing-agent (Playwright)
+- Command: `npm run test:user-stories`
 
 ## Notes
 
-- Not executed yet (pre-build planning scaffold).
+- Verified deterministic sort interaction.
+- Verified favorites-only empty-state behavior.
+- Confirmed list remains stable when toggling filter off/on.
 
 ## Screenshots
 
-- (none)
+- `01-favorites-empty-state.png`
+- `02-library-sorted-by-name.png`

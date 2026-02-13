@@ -21,6 +21,12 @@
 - Confirmation dialog counts match selected scope.
 - Restore results are reported (success/partial/failure).
 
+## Edge Cases
+
+- Selecting a group restores only tabs in that group.
+- Selecting a single tab restores one tab only.
+- Invalid/out-of-range tree selections return graceful warnings, not crashes.
+
 ## Evidence
 
 - Screenshots: /user_stories/restore-selection/validation/

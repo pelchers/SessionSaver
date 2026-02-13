@@ -33,8 +33,8 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-const storiesFile = process.argv[1];
-const outDir = process.argv[2];
+const storiesFile = process.argv[2];
+const outDir = process.argv[3];
 
 const lines = fs.readFileSync(storiesFile, 'utf8')
   .split(/\r?\n/)

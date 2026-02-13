@@ -19,6 +19,11 @@
 - Favorite toggles immediately and persists after closing/reopening UI.
 - Favorites-only filter includes the favorited session.
 
+## Edge Cases
+
+- Favorite toggled on/off repeatedly should stay consistent with final click.
+- Favoriting while sorted by favorites-first should keep deterministic ordering.
+
 ## Evidence
 
 - Screenshots: /user_stories/favorite-session/validation/

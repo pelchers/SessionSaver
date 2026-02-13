@@ -23,6 +23,7 @@ This folder contains planning artifacts for a Chrome extension concept that trea
 - `Restore-Spec.md`: Full + selective restore rules, ordering, and rate limiting.
 - `Failure-Reporting-Spec.md`: Error model and user-facing messaging patterns.
 - `QA-Test-Plan.md`: Manual and automated test plan with matrices.
+- `Developer-Instructions.md`: Canonical local dev loop, validation gates, and pre-launch flow.
 - `Release-Checklist.md`: Pre-release checklist (permissions/privacy/perf).
 - `Accessibility-Checklist.md`: Keyboard, focus, semantics, contrast checklist.
 - `Telemetry-and-Privacy.md`: Data handling and explicit telemetry policy for v1.

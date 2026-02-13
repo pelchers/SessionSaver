@@ -21,6 +21,12 @@
 - Expand/collapse works.
 - Selection updates the restore action label/scope correctly.
 
+## Edge Cases
+
+- Missing session id route shows a clear not-found error.
+- Windows with zero groups still render an `Ungrouped` branch.
+- Very long tab titles remain selectable via tooltip/title attribute.
+
 ## Evidence
 
 - Screenshots: /user_stories/view-session-tree/validation/

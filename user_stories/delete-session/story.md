@@ -18,6 +18,11 @@
 - Confirmation is required before deletion.
 - Session is removed from library and cannot be restored.
 
+## Edge Cases
+
+- User cancels confirmation: row remains unchanged.
+- Double-click delete action does not leave list in a broken state.
+
 ## Evidence
 
 - Screenshots: /user_stories/delete-session/validation/

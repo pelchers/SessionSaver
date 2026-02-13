@@ -10,6 +10,9 @@
 - Delete
 - Error and edge cases
 
+Reference runbook:
+- `.docs/planning/Chrome-Prelaunch-Test-Setup.md`
+
 ## Manual Test Matrix
 
 1. Save

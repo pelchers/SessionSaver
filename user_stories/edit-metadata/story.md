@@ -21,6 +21,12 @@
 - Description preview in library reflects the updated description.
 - Changes persist after closing/reopening UI.
 
+## Edge Cases
+
+- Name with leading/trailing whitespace is trimmed.
+- Description with multi-line and symbol-heavy content saves without corruption.
+- Blur-save and explicit save button should not race or overwrite each other.
+
 ## Evidence
 
 - Screenshots: /user_stories/edit-metadata/validation/

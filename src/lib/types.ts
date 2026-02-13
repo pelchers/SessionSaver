@@ -47,9 +47,24 @@ export type SavedSessionV1 = {
   windows: SavedWindowV1[];
 };
 
+export type RestoreTargetV1 =
+  | { kind: "session" }
+  | { kind: "window"; windowIndex: number }
+  | { kind: "group"; windowIndex: number; groupIndex: number }
+  | { kind: "ungrouped"; windowIndex: number }
+  | { kind: "tab"; windowIndex: number; groupIndex: number | null; tabIndex: number };
+
+export type RestoreReportV1 = {
+  createdWindows: number;
+  createdGroups: number;
+  createdTabs: number;
+  skippedTabs: number;
+  skippedReasons: string[];
+  warnings: string[];
+};
+
 export type SchemaRootV1 = {
   schemaVersion: 1;
   sessionsIndex: SessionSummaryV1[];
   sessionsById: Record<SessionId, SavedSessionV1>;
 };
-

@@ -1,4 +1,5 @@
 import { captureCurrentWindows } from "../lib/capture";
+import { restoreSession } from "../lib/restore";
 import type { BackgroundRequest, BackgroundResponse } from "../lib/messages";
 import { deleteSession, ensureInitialized, getSession, listSessions, updateSessionMeta, upsertSession } from "../lib/storage";
 import type { SavedSessionV1 } from "../lib/types";
@@ -49,6 +50,18 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
       case "DELETE_SESSION": {
         await deleteSession(req.id);
         return { ok: true };
+      }
+      case "RESTORE_SESSION": {
+        const session = await getSession(req.id);
+        if (!session) return { ok: false, error: "session_not_found" };
+        const report = await restoreSession(session, { kind: "session" });
+        return { ok: true, report };
+      }
+      case "RESTORE_SELECTION": {
+        const session = await getSession(req.id);
+        if (!session) return { ok: false, error: "session_not_found" };
+        const report = await restoreSession(session, req.target);
+        return { ok: true, report };
       }
       default:
         return { ok: false, error: "unhandled_message" };

@@ -1,13 +1,15 @@
 # Validation Log
 
-- Status: not_run
-- Date: 2026-02-10
-- Tester: TBD
+- Status: pass
+- Date: 2026-02-13
+- Tester: user-story-testing-agent (Playwright)
+- Command: `npm run test:user-stories`
 
 ## Notes
 
-- Not executed yet (pre-build planning scaffold).
+- Full restore action returns structured restore report.
+- Restore report includes skipped restricted URL details.
 
 ## Screenshots
 
-- (none)
+- `01-full-restore-report.png`

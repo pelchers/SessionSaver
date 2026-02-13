@@ -21,6 +21,7 @@
 ## QA and Reliability
 
 - Manual QA matrix completed (`.docs/planning/QA-Test-Plan.md`).
+- Chrome pre-launch setup + approval packet completed (`.docs/planning/Chrome-Prelaunch-Test-Setup.md`).
 - Restore edge cases validated (restricted URLs, group failures).
 - Corrupt data handling verified.
 

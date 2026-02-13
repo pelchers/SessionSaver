@@ -20,6 +20,12 @@
 - Favorites-only filter shows only starred sessions.
 - Returning from a session detail view preserves current sort/filter state.
 
+## Edge Cases
+
+- Favorites-only enabled with zero favorites should show an empty-state message, not a crash.
+- Sort changes while list is empty should remain stable.
+- Rapid sort/filter toggles should not produce duplicate rows.
+
 ## Evidence
 
 - Screenshots: /user_stories/browse-library/validation/
