@@ -5,7 +5,7 @@
 1. Install deps:
    - `npm install`
 2. Start local extension dev build:
-   - `npm run dev`
+   - `npm run dev:chrome`
 3. Load unpacked extension from `dist/` in `chrome://extensions`.
 4. For each change:
    - wait for rebuild

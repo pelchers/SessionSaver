@@ -98,6 +98,21 @@ export async function updateSessionMeta(id: SessionId, patch: SessionMetaPatch):
   return summary;
 }
 
+export async function updateSessionWindows(id: SessionId, windows: SavedSessionV1["windows"]): Promise<SessionSummaryV1> {
+  await ensureInitialized();
+  const root = (await getRoot()) ?? emptyRoot();
+  const session = root.sessionsById[id];
+  if (!session) throw new Error("session_not_found");
+
+  session.windows = windows;
+  session.updatedAt = new Date().toISOString();
+
+  const summary = summarizeSession(session);
+  root.sessionsIndex = root.sessionsIndex.map((s) => (s.id === id ? summary : s));
+  await setRoot(root);
+  return summary;
+}
+
 export async function deleteSession(id: SessionId): Promise<void> {
   await ensureInitialized();
   const root = (await getRoot()) ?? emptyRoot();

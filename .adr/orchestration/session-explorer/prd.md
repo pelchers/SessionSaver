@@ -49,7 +49,7 @@ Build a Chrome extension that saves the userâ€™s current tab context as named â€
 
 ## Technical requirements
 
-See `.codex/adr/orchestration/session-explorer/technical_requirements.md`.
+See `.adr/orchestration/session-explorer/technical_requirements.md`.
 
 ## Risks / assumptions
 

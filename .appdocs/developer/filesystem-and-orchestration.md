@@ -22,9 +22,9 @@
 
 ## Codex Orchestration Folders
 
-- `.codex/adr/orchestration/session-explorer/`: Source-of-truth task list and technical requirements.
-- `.codex/adr/current/session-explorer/`: Current phase files.
-- `.codex/adr/history/session-explorer/`: Completed phase reviews.
+- `.adr/orchestration/session-explorer/`: Source-of-truth task list and technical requirements.
+- `.adr/current/session-explorer/`: Current phase files.
+- `.adr/history/session-explorer/`: Completed phase reviews.
 
 ## Where Core Functionality Lives
 

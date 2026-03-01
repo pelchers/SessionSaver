@@ -19,12 +19,13 @@ Why:
 Command:
 
 ```bash
-npm run dev
+npm run dev:chrome
 ```
 
 Why:
 - CRX/Vite rebuilds to `dist/` on file changes.
 - You can keep Chrome pointed at `dist/` and reload extension quickly.
+- Fixed host/port avoids random port switching that can break extension dev mode injection.
 
 ## Step 3: Load extension once in Chrome
 
@@ -61,3 +62,21 @@ npm run prelaunch:check
 Why:
 - Keeps local branch aligned with release-quality gates.
 - Catches regressions before manual QA.
+
+## Troubleshooting: "Cannot connect to the Vite Dev Server"
+
+If extension pages show:
+
+- `Cannot connect to the Vite Dev Server on http://localhost:<port>`
+
+run this recovery:
+
+1. Stop all Vite terminals (`Ctrl+C`).
+2. Start fixed command:
+   - `npm run dev:chrome`
+3. Verify browser reachability:
+   - open `http://127.0.0.1:5173` in a normal tab.
+4. Go to `chrome://extensions` and click `Reload` on SessionSaver.
+
+Why:
+- CRX dev mode references one explicit local URL; if the server is on a different port, extension pages fail until reloaded against the correct endpoint.

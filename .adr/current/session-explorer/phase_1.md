@@ -39,4 +39,4 @@ Status: in_progress
 - None yet.
 
 ## Notes
-- Orchestration truth lives in `.codex/adr/orchestration/session-explorer/primary_task_list.md`.
+- Orchestration truth lives in `.adr/orchestration/session-explorer/primary_task_list.md`.

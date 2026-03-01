@@ -7,11 +7,12 @@ Use this for real runtime testing with Chrome APIs (`tabs`, `tabGroups`, `storag
 Commands:
 
 ```bash
-npm run dev
+npm run dev:chrome
 ```
 
 Why:
 - Keeps `dist/` updated as source changes.
+- Locks dev server endpoint to `127.0.0.1:5173`, which avoids stale dev-server URL errors in extension pages.
 
 ## Step 2: Load unpacked extension
 
@@ -55,3 +56,14 @@ Action:
 
 Why:
 - MV3 worker and manifest changes need explicit extension reload to take effect.
+
+## If popup/options show Vite connection error
+
+Symptom:
+- `Cannot connect to the Vite Dev Server on http://localhost:5174` (or another port).
+
+Fix:
+1. Stop all running `vite` sessions.
+2. Run `npm run dev:chrome`.
+3. Open `http://127.0.0.1:5173` in a browser tab to confirm server is reachable.
+4. Reload extension in `chrome://extensions`.

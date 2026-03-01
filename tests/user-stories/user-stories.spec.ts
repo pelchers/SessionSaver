@@ -152,6 +152,15 @@ async function installMockExtensionRuntime(page: Page): Promise<void> {
           state.sessionsIndex = state.sessionsIndex.map((s) => (s.id === req.id ? summary : s));
           return { ok: true, summary };
         }
+        case "UPDATE_SESSION_WINDOWS": {
+          const session = state.sessionsById[req.id];
+          if (!session) return { ok: false, error: "session_not_found" };
+          session.windows = clone(req.windows ?? []);
+          session.updatedAt = now();
+          const summary = summarizeSession(session);
+          state.sessionsIndex = state.sessionsIndex.map((s) => (s.id === req.id ? summary : s));
+          return { ok: true, summary };
+        }
         case "DELETE_SESSION": {
           delete state.sessionsById[req.id];
           state.sessionsIndex = state.sessionsIndex.filter((s) => s.id !== req.id);
@@ -254,7 +263,7 @@ test("edit-metadata story with unusual input behavior", async ({ page }) => {
 
 test("view-session-tree story", async ({ page }) => {
   await page.getByRole("link", { name: "Baseline Session" }).click();
-  await expect(page.getByText("Explorer Tree")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Tabs" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Window 1 (4 tabs)" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Group 1: Research (2 tabs)" })).toBeVisible();
   await screenshot(page, "view-session-tree", "01-tree-visible.png");
@@ -270,9 +279,29 @@ test("restore-full-session story", async ({ page }) => {
 test("restore-selection story", async ({ page }) => {
   await page.getByRole("link", { name: "Baseline Session" }).click();
   await page.getByRole("button", { name: "Group 1: Research (2 tabs)" }).click();
-  await page.getByRole("button", { name: "Restore Selected" }).click();
+  await page.getByRole("button", { name: "Restore Selected Node" }).click();
   await expect(page.getByText(/Restore complete/)).toBeVisible();
   await screenshot(page, "restore-selection", "01-selected-restore-report.png");
+});
+
+test("edit-tabs story: additive click select then open/delete selected", async ({ page }) => {
+  await page.getByRole("link", { name: "Baseline Session" }).click();
+  await page.getByRole("button", { name: "Spec" }).click();
+  await page.getByRole("button", { name: "Mail" }).click();
+  await expect(page.getByText("Selected tabs: 2 (click a tab to toggle selection)")).toBeVisible();
+  await expect(page.locator(".selected-tab-list").getByText("Spec")).toBeVisible();
+  await expect(page.locator(".selected-tab-list").getByText("Mail")).toBeVisible();
+  await expect(page.locator(".selected-tab-list").getByText("Roadmap")).toHaveCount(0);
+
+  await page.getByRole("button", { name: "Open Selected Tabs" }).click();
+  await expect(page.getByText(/Opened 2 selected tab/)).toBeVisible();
+  await screenshot(page, "edit-metadata", "02-additive-select-open-selected.png");
+
+  await page.getByRole("button", { name: "Delete Selected Tabs" }).click();
+  await expect(page.getByRole("button", { name: "Spec" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Mail" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Roadmap" })).toHaveCount(1);
+  await screenshot(page, "edit-metadata", "03-delete-selected-tabs.png");
 });
 
 test("delete-session story + weird cancel behavior", async ({ page }) => {

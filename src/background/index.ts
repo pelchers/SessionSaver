@@ -1,7 +1,7 @@
 import { captureCurrentWindows } from "../lib/capture";
 import { restoreSession } from "../lib/restore";
 import type { BackgroundRequest, BackgroundResponse } from "../lib/messages";
-import { deleteSession, ensureInitialized, getSession, listSessions, updateSessionMeta, upsertSession } from "../lib/storage";
+import { deleteSession, ensureInitialized, getSession, listSessions, updateSessionMeta, updateSessionWindows, upsertSession } from "../lib/storage";
 import type { SavedSessionV1 } from "../lib/types";
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -62,6 +62,10 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
         if (!session) return { ok: false, error: "session_not_found" };
         const report = await restoreSession(session, req.target);
         return { ok: true, report };
+      }
+      case "UPDATE_SESSION_WINDOWS": {
+        const summary = await updateSessionWindows(req.id, req.windows);
+        return { ok: true, summary };
       }
       default:
         return { ok: false, error: "unhandled_message" };

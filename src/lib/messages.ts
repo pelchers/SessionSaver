@@ -1,4 +1,4 @@
-import type { RestoreReportV1, RestoreTargetV1, SavedSessionV1, SessionId, SessionSummaryV1 } from "./types";
+import type { RestoreReportV1, RestoreTargetV1, SavedSessionV1, SavedWindowV1, SessionId, SessionSummaryV1 } from "./types";
 
 export type PingRequest = { type: "PING" };
 export type GetSessionsRequest = { type: "GET_SESSIONS_INDEX" };
@@ -12,6 +12,7 @@ export type UpdateSessionMetaRequest = {
 export type DeleteSessionRequest = { type: "DELETE_SESSION"; id: SessionId };
 export type RestoreSessionRequest = { type: "RESTORE_SESSION"; id: SessionId };
 export type RestoreSelectionRequest = { type: "RESTORE_SELECTION"; id: SessionId; target: RestoreTargetV1 };
+export type UpdateSessionWindowsRequest = { type: "UPDATE_SESSION_WINDOWS"; id: SessionId; windows: SavedWindowV1[] };
 
 export type BackgroundRequest =
   | PingRequest
@@ -21,7 +22,8 @@ export type BackgroundRequest =
   | UpdateSessionMetaRequest
   | DeleteSessionRequest
   | RestoreSessionRequest
-  | RestoreSelectionRequest;
+  | RestoreSelectionRequest
+  | UpdateSessionWindowsRequest;
 
 export type BackgroundResponse =
   | { ok: true; ts?: string }

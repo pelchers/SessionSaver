@@ -1,6 +1,6 @@
 # ADR Phase Planning (Preplanning Location)
 
-This project uses the `.codex/templates/adr` phased planning method, but during preplanning we keep artifacts in `.docs/planning/adr` (not in `.codex/adr/orchestration`).
+This project uses the `.codex/templates/adr` phased planning method, but during preplanning we keep artifacts in `.docs/planning/adr` (not in `.adr/orchestration`).
 
 ## Structure
 
