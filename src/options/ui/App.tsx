@@ -44,6 +44,17 @@ export default function App(): JSX.Element {
           <Route path="/session/:id" element={<SessionPage />} />
         </Routes>
       </main>
+      <footer className="app-footer">
+        <div className="app-footer-content">
+          <span>
+            Developed by pelchers ·{" "}
+            <a href="https://pelych.com" target="_blank" rel="noreferrer" className="footer-link">
+              Pelych.com
+            </a>
+          </span>
+          <span className="app-footer-license">License: MIT</span>
+        </div>
+      </footer>
     </div>
   );
 }
