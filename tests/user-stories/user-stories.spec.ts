@@ -286,6 +286,30 @@ test("restore-selection story", async ({ page }) => {
 
 test("edit-tabs story: additive click select then open/delete selected", async ({ page }) => {
   await page.getByRole("link", { name: "Baseline Session" }).click();
+  const windowOne = page.getByRole("button", { name: "Window 1 (4 tabs)" });
+  const groupOne = page.getByRole("button", { name: "Group 1: Research (2 tabs)" });
+
+  await page.getByRole("button", { name: "Spec" }).click();
+  await expect(groupOne).toHaveClass(/selected/);
+  await expect(windowOne).toHaveClass(/selected/);
+
+  await groupOne.click();
+  await expect(page.getByText("Selected tabs: 0 (click a tab to toggle selection)")).toBeVisible();
+
+  await groupOne.click();
+  await expect(page.getByText("Selected tabs: 2 (click a tab to toggle selection)")).toBeVisible();
+  await expect(page.locator(".selected-tab-list").getByText("Spec")).toBeVisible();
+  await expect(page.locator(".selected-tab-list").getByText("Roadmap")).toBeVisible();
+
+  await groupOne.click();
+  await expect(page.getByText("Selected tabs: 0 (click a tab to toggle selection)")).toBeVisible();
+
+  await windowOne.click();
+  await expect(page.getByText("Selected tabs: 4 (click a tab to toggle selection)")).toBeVisible();
+
+  await windowOne.click();
+  await expect(page.getByText("Selected tabs: 0 (click a tab to toggle selection)")).toBeVisible();
+
   await page.getByRole("button", { name: "Spec" }).click();
   await page.getByRole("button", { name: "Mail" }).click();
   await expect(page.getByText("Selected tabs: 2 (click a tab to toggle selection)")).toBeVisible();

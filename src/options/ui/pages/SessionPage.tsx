@@ -215,6 +215,27 @@ export default function SessionPage(): JSX.Element {
   const tree = useMemo(() => (session ? buildTree(session) : []), [session]);
   const tabRefs = useMemo(() => (session ? flattenTabs(session) : []), [session]);
   const tabByKey = useMemo(() => new Map(tabRefs.map((ref) => [ref.key, ref])), [tabRefs]);
+  const selectedTabSet = useMemo(() => new Set(selectedTabKeys), [selectedTabKeys]);
+  const tabKeysByWindow = useMemo(() => {
+    const map = new Map<number, string[]>();
+    tabRefs.forEach((tab) => {
+      const list = map.get(tab.windowIndex);
+      if (list) list.push(tab.key);
+      else map.set(tab.windowIndex, [tab.key]);
+    });
+    return map;
+  }, [tabRefs]);
+  const tabKeysByGroup = useMemo(() => {
+    const map = new Map<string, string[]>();
+    tabRefs.forEach((tab) => {
+      if (tab.groupIndex === null) return;
+      const groupKey = `${tab.windowIndex}:${tab.groupIndex}`;
+      const list = map.get(groupKey);
+      if (list) list.push(tab.key);
+      else map.set(groupKey, [tab.key]);
+    });
+    return map;
+  }, [tabRefs]);
   const counts = useMemo(() => (session ? sessionCounts(session) : { windows: 0, groups: 0, tabs: 0 }), [session]);
   const addTargetOptions = useMemo(() => {
     if (!session) return [] as Array<{ value: string; label: string }>;
@@ -484,11 +505,51 @@ export default function SessionPage(): JSX.Element {
     setSelectedTabKeys((prev) => (prev.includes(tabKey) ? prev.filter((key) => key !== tabKey) : [...prev, tabKey]));
   }
 
+  function toggleTabBatch(tabKeys: string[]): void {
+    if (tabKeys.length === 0) return;
+    setSelectedTabKeys((prev) => {
+      const next = new Set(prev);
+      const anySelected = tabKeys.some((key) => next.has(key));
+      if (anySelected) {
+        tabKeys.forEach((key) => next.delete(key));
+      } else {
+        tabKeys.forEach((key) => next.add(key));
+      }
+      return Array.from(next);
+    });
+  }
+
+  function applyGroupSelection(windowIndex: number, groupIndex: number): void {
+    const keys = tabKeysByGroup.get(`${windowIndex}:${groupIndex}`) ?? [];
+    toggleTabBatch(keys);
+  }
+
+  function applyWindowSelection(windowIndex: number): void {
+    const keys = tabKeysByWindow.get(windowIndex) ?? [];
+    toggleTabBatch(keys);
+  }
+
+  function isGroupAutoSelected(windowIndex: number, groupIndex: number): boolean {
+    const keys = tabKeysByGroup.get(`${windowIndex}:${groupIndex}`) ?? [];
+    return keys.some((key) => selectedTabSet.has(key));
+  }
+
+  function isWindowAutoSelected(windowIndex: number): boolean {
+    const keys = tabKeysByWindow.get(windowIndex) ?? [];
+    return keys.some((key) => selectedTabSet.has(key));
+  }
+
   function renderTreeNode(node: TreeNode, depth: number): JSX.Element {
     const hasChildren = node.children.length > 0;
     const isExpanded = expanded[node.id] ?? true;
     const isPrimarySelected = selectedNodeId === node.id;
     const isTabMultiSelected = node.target.kind === "tab" && selectedTabKeys.includes(node.id);
+    const isAutoSelectedByTabSelection =
+      node.target.kind === "group"
+        ? isGroupAutoSelected(node.target.windowIndex, node.target.groupIndex)
+        : node.target.kind === "window"
+          ? isWindowAutoSelected(node.target.windowIndex)
+          : false;
     return (
       <div key={node.id}>
         <div className="tree-row" style={{ paddingLeft: `${depth * 16}px` }}>
@@ -504,11 +565,13 @@ export default function SessionPage(): JSX.Element {
             <span className="tree-spacer" />
           )}
           <button
-            className={isPrimarySelected || isTabMultiSelected ? "tree-item selected" : "tree-item"}
+            className={isPrimarySelected || isTabMultiSelected || isAutoSelectedByTabSelection ? "tree-item selected" : "tree-item"}
             onClick={() => {
               setSelectedNodeId(node.id);
               setSelectedTarget(node.target);
               if (node.target.kind === "tab") applyTabSelection(node.id);
+              if (node.target.kind === "group") applyGroupSelection(node.target.windowIndex, node.target.groupIndex);
+              if (node.target.kind === "window") applyWindowSelection(node.target.windowIndex);
             }}
             title={node.label}
           >
