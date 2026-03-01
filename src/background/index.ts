@@ -1,7 +1,17 @@
 import { captureCurrentWindows } from "../lib/capture";
 import { restoreSession } from "../lib/restore";
 import type { BackgroundRequest, BackgroundResponse } from "../lib/messages";
-import { deleteSession, ensureInitialized, getSession, listSessions, updateSessionMeta, updateSessionWindows, upsertSession } from "../lib/storage";
+import {
+  deleteSession,
+  ensureInitialized,
+  getSession,
+  getSyncedSessionId,
+  listSessions,
+  setSyncedSessionId,
+  updateSessionMeta,
+  updateSessionWindows,
+  upsertSession
+} from "../lib/storage";
 import type { SavedSessionV1 } from "../lib/types";
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -26,6 +36,16 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
         const session = await getSession(req.id);
         if (!session) return { ok: false, error: "session_not_found" };
         return { ok: true, session };
+      }
+      case "GET_SYNC_SELECTION":
+        return { ok: true, syncedSessionId: await getSyncedSessionId() };
+      case "SET_SYNC_SELECTION": {
+        if (req.id) {
+          const session = await getSession(req.id);
+          if (!session) return { ok: false, error: "session_not_found" };
+        }
+        const syncedSessionId = await setSyncedSessionId(req.id);
+        return { ok: true, syncedSessionId };
       }
       case "SAVE_SESSION": {
         const windows = await captureCurrentWindows();

@@ -178,7 +178,9 @@ export default function SessionPage(): JSX.Element {
   const [metaName, setMetaName] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
   const [savingMeta, setSavingMeta] = useState(false);
+  const [savingSync, setSavingSync] = useState(false);
   const [savingTabs, setSavingTabs] = useState(false);
+  const [syncedSessionId, setSyncedSessionId] = useState<string | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [selectedTarget, setSelectedTarget] = useState<Exclude<RestoreTargetV1, { kind: "session" }> | null>(null);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -192,20 +194,25 @@ export default function SessionPage(): JSX.Element {
     (async () => {
       if (!id) return;
       setError(null);
-      const res = await bgCall({ type: "GET_SESSION", id });
-      if (!res.ok) {
-        setError(res.error);
+      const [sessionRes, syncRes] = await Promise.all([bgCall({ type: "GET_SESSION", id }), bgCall({ type: "GET_SYNC_SELECTION" })]);
+      if (!sessionRes.ok) {
+        setError(sessionRes.error);
+        return;
+      }
+      if (!syncRes.ok) {
+        setError(syncRes.error);
         return;
       }
 
-      setSession(res.session);
-      setMetaName(res.session.name);
-      setMetaDescription(res.session.description);
+      setSession(sessionRes.session);
+      setMetaName(sessionRes.session.name);
+      setMetaDescription(sessionRes.session.description);
+      setSyncedSessionId(syncRes.syncedSessionId);
       setSelectedTabKeys([]);
       setAddTargetValue("u:0");
 
       const nextExpanded: Record<string, boolean> = {};
-      buildTree(res.session).forEach((node) => {
+      buildTree(sessionRes.session).forEach((node) => {
         nextExpanded[node.id] = true;
       });
       setExpanded(nextExpanded);
@@ -345,6 +352,22 @@ export default function SessionPage(): JSX.Element {
   async function onToggleFavorite(): Promise<void> {
     if (!session) return;
     await saveMetadata({ favorite: !session.favorite });
+  }
+
+  async function onToggleSyncSelection(): Promise<void> {
+    if (!session) return;
+    setSavingSync(true);
+    setError(null);
+    setStatus(null);
+    const nextId = syncedSessionId === session.id ? null : session.id;
+    const res = await bgCall({ type: "SET_SYNC_SELECTION", id: nextId });
+    setSavingSync(false);
+    if (!res.ok) {
+      setError(res.error);
+      return;
+    }
+    setSyncedSessionId(res.syncedSessionId);
+    setStatus(res.syncedSessionId ? "Session marked for cross-device sync." : "Session sync selection cleared.");
   }
 
   async function onRestore(target: RestoreTargetV1): Promise<void> {
@@ -615,15 +638,26 @@ export default function SessionPage(): JSX.Element {
         <section className="session-panel">
           <div className="panel-head">
             <h2>Metadata</h2>
-            <button
-              className={session.favorite ? "star on" : "star"}
-              onClick={() => void onToggleFavorite()}
-              aria-label={session.favorite ? "Unfavorite" : "Favorite"}
-              title={session.favorite ? "Unfavorite" : "Favorite"}
-              disabled={savingMeta}
-            >
-              {session.favorite ? "★" : "☆"}
-            </button>
+            <div className="meta-head-actions">
+              <button
+                className={session.favorite ? "star on" : "star"}
+                onClick={() => void onToggleFavorite()}
+                aria-label={session.favorite ? "Unfavorite" : "Favorite"}
+                title={session.favorite ? "Unfavorite" : "Favorite"}
+                disabled={savingMeta}
+              >
+                {session.favorite ? "★" : "☆"}
+              </button>
+              <button
+                className={syncedSessionId === session.id ? "sync-mark on" : "sync-mark"}
+                onClick={() => void onToggleSyncSelection()}
+                aria-label={syncedSessionId === session.id ? "Unsync this session" : "Sync this session"}
+                title={syncedSessionId === session.id ? "Unsync this session" : "Mark this session for cross-device sync"}
+                disabled={savingSync}
+              >
+                ⟳
+              </button>
+            </div>
           </div>
 
           <div className="meta-grid">

@@ -2,12 +2,17 @@ import { chromePromise, chromePromiseVoid } from "./chromeAsync";
 import type { SavedSessionV1, SchemaRootV1, SessionId, SessionSummaryV1 } from "./types";
 
 const ROOT_KEY = "root";
+const SYNC_SELECTION_KEY = "syncSelection";
 
 function emptyRoot(): SchemaRootV1 {
   return { schemaVersion: 1, sessionsIndex: [], sessionsById: {} };
 }
 
 export type SessionMetaPatch = Partial<Pick<SavedSessionV1, "name" | "description" | "favorite">>;
+
+type SyncSelection = {
+  syncedSessionId: SessionId | null;
+};
 
 export async function ensureInitialized(): Promise<void> {
   const root = await getRoot();
@@ -33,6 +38,31 @@ export async function getRoot(): Promise<SchemaRootV1 | null> {
 
 export async function setRoot(root: SchemaRootV1): Promise<void> {
   await chromePromiseVoid((cb) => chrome.storage.local.set({ [ROOT_KEY]: root }, cb));
+}
+
+async function getSyncSelection(): Promise<SyncSelection> {
+  const res = await chromePromise<Record<string, unknown>>((cb) => chrome.storage.sync.get([SYNC_SELECTION_KEY], cb));
+  const raw = res[SYNC_SELECTION_KEY] as unknown;
+  if (!raw || typeof raw !== "object") return { syncedSessionId: null };
+
+  const parsed = raw as { syncedSessionId?: unknown };
+  return {
+    syncedSessionId: typeof parsed.syncedSessionId === "string" ? parsed.syncedSessionId : null
+  };
+}
+
+async function setSyncSelection(selection: SyncSelection): Promise<void> {
+  await chromePromiseVoid((cb) => chrome.storage.sync.set({ [SYNC_SELECTION_KEY]: selection }, cb));
+}
+
+export async function getSyncedSessionId(): Promise<SessionId | null> {
+  const selection = await getSyncSelection();
+  return selection.syncedSessionId;
+}
+
+export async function setSyncedSessionId(id: SessionId | null): Promise<SessionId | null> {
+  await setSyncSelection({ syncedSessionId: id });
+  return id;
 }
 
 export function summarizeSession(session: SavedSessionV1): SessionSummaryV1 {
@@ -119,4 +149,9 @@ export async function deleteSession(id: SessionId): Promise<void> {
   delete root.sessionsById[id];
   root.sessionsIndex = root.sessionsIndex.filter((s) => s.id !== id);
   await setRoot(root);
+
+  const syncedId = await getSyncedSessionId();
+  if (syncedId === id) {
+    await setSyncedSessionId(null);
+  }
 }

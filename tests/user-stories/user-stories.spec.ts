@@ -70,10 +70,12 @@ async function installMockExtensionRuntime(page: Page): Promise<void> {
       sessionsById: Record<string, any>;
       sessionsIndex: any[];
       saveCounter: number;
+      syncedSessionId: string | null;
     } = {
       sessionsById: {},
       sessionsIndex: [],
-      saveCounter: 0
+      saveCounter: 0,
+      syncedSessionId: null
     };
 
     const seedSession = (name: string, description: string) => {
@@ -116,6 +118,13 @@ async function installMockExtensionRuntime(page: Page): Promise<void> {
           const session = state.sessionsById[req.id];
           if (!session) return { ok: false, error: "session_not_found" };
           return { ok: true, session: clone(session) };
+        }
+        case "GET_SYNC_SELECTION":
+          return { ok: true, syncedSessionId: state.syncedSessionId };
+        case "SET_SYNC_SELECTION": {
+          if (req.id && !state.sessionsById[req.id]) return { ok: false, error: "session_not_found" };
+          state.syncedSessionId = typeof req.id === "string" ? req.id : null;
+          return { ok: true, syncedSessionId: state.syncedSessionId };
         }
         case "SAVE_SESSION": {
           const name = String(req.name ?? "").trim();
@@ -164,6 +173,7 @@ async function installMockExtensionRuntime(page: Page): Promise<void> {
         case "DELETE_SESSION": {
           delete state.sessionsById[req.id];
           state.sessionsIndex = state.sessionsIndex.filter((s) => s.id !== req.id);
+          if (state.syncedSessionId === req.id) state.syncedSessionId = null;
           return { ok: true };
         }
         case "RESTORE_SESSION":
@@ -247,6 +257,17 @@ test("favorite-session story", async ({ page }) => {
   await baselineRow.getByRole("button", { name: "Favorite" }).click();
   await expect(baselineRow.getByRole("button", { name: "Unfavorite" })).toBeVisible();
   await screenshot(page, "favorite-session", "01-session-favorited.png");
+});
+
+test("sync-session story: mark one session for cross-device sync", async ({ page }) => {
+  await page.getByRole("link", { name: "Baseline Session" }).click();
+  await page.getByRole("button", { name: "Sync this session" }).click();
+  await expect(page.getByText("Session marked for cross-device sync.")).toBeVisible();
+  await page.getByRole("link", { name: "Back" }).click();
+
+  const baselineRow = page.locator("tr", { has: page.getByRole("link", { name: "Baseline Session" }) });
+  await expect(baselineRow.getByRole("button", { name: "Unsync session" })).toBeVisible();
+  await screenshot(page, "sync-session", "01-session-marked-for-sync.png");
 });
 
 test("edit-metadata story with unusual input behavior", async ({ page }) => {

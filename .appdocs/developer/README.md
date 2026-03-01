@@ -27,6 +27,9 @@ Use this folder for implementation details, local testing flow, and pre-launch a
 - Architecture: `.appdocs/developer/architecture.md`
 - Filesystem + orchestration map: `.appdocs/developer/filesystem-and-orchestration.md`
 - Testing + validation model: `.appdocs/developer/testing-and-validation.md`
+- Chrome integration notes:
+  - `.appdocs/developer/chrome/README.md`
+  - `.appdocs/developer/chrome/storage-sync.md`
 - Guides:
   - `.appdocs/developer/guides/local-dev-loop.md`
   - `.appdocs/developer/guides/chrome-unpacked-testing.md`

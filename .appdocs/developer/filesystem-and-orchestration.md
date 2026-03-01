@@ -19,6 +19,7 @@
 - `.docs/planning/`: PRD/spec/QA/release planning docs.
 - `.docs/planning/Chrome-Prelaunch-Test-Setup.md`: Pre-launch manual runbook.
 - `.docs/planning/Developer-Instructions.md`: Dev instruction baseline.
+- `.appdocs/developer/chrome/`: Chrome API-specific implementation details (including storage sync design).
 
 ## Codex Orchestration Folders
 
@@ -33,6 +34,7 @@
   - `src/background/index.ts` (`SAVE_SESSION`)
 - Session management:
   - `src/lib/storage.ts`
+  - `src/background/index.ts` (`GET_SYNC_SELECTION`, `SET_SYNC_SELECTION`)
   - `src/options/ui/pages/LibraryPage.tsx`
 - Metadata/tree/restore UI:
   - `src/options/ui/pages/SessionPage.tsx`

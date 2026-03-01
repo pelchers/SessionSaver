@@ -284,6 +284,29 @@ button.danger {
   background: var(--accent-soft);
 }
 
+.sync-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.sync-mark.on {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.row-flags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .error {
   margin: 10px 0;
   padding: 10px 12px;
@@ -422,6 +445,12 @@ button.danger {
   justify-content: space-between;
   gap: 8px;
   margin-bottom: 10px;
+}
+
+.meta-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .panel-actions {

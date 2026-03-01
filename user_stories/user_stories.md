@@ -16,7 +16,8 @@ Each story MUST have a matching folder:
 5. `view-session-tree`: Open a session and explore windows/groups/tabs in the tree.
 6. `restore-full-session`: Restore a full saved session with confirmation.
 7. `restore-selection`: Restore a single window/group/tab from a session.
-8. `delete-session`: Delete a session with confirmation.
+8. `sync-session`: Mark exactly one saved session as the cross-device sync target.
+9. `delete-session`: Delete a session with confirmation.
 
 ## Edge-Behavior Coverage
 
@@ -27,6 +28,7 @@ Validation must include unusual behavior, not just happy paths:
 - missing/invalid session route id
 - restricted/internal URLs during restore
 - rapid toggle interactions (favorite/filter/sort)
+- sync target exclusivity (only one session can be marked)
 
 Run command:
 

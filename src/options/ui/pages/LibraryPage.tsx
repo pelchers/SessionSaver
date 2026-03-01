@@ -7,6 +7,7 @@ type SortMode = "updated_desc" | "name_asc" | "favorites_first";
 
 export default function LibraryPage(): JSX.Element {
   const [sessions, setSessions] = useState<SessionSummaryV1[]>([]);
+  const [syncedSessionId, setSyncedSessionId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,13 +22,22 @@ export default function LibraryPage(): JSX.Element {
   async function refresh(): Promise<void> {
     setLoading(true);
     setError(null);
-    const res = await bgCall({ type: "GET_SESSIONS_INDEX" });
-    if (!res.ok) {
-      setError(res.error);
+    const [sessionsRes, syncRes] = await Promise.all([
+      bgCall({ type: "GET_SESSIONS_INDEX" }),
+      bgCall({ type: "GET_SYNC_SELECTION" })
+    ]);
+    if (!sessionsRes.ok) {
+      setError(sessionsRes.error);
       setLoading(false);
       return;
     }
-    setSessions(res.sessions);
+    if (!syncRes.ok) {
+      setError(syncRes.error);
+      setLoading(false);
+      return;
+    }
+    setSessions(sessionsRes.sessions);
+    setSyncedSessionId(syncRes.syncedSessionId);
     setLoading(false);
   }
 
@@ -73,6 +83,17 @@ export default function LibraryPage(): JSX.Element {
       return;
     }
     setSessions((prev) => prev.filter((s) => s.id !== id));
+    setSyncedSessionId((prev) => (prev === id ? null : prev));
+  }
+
+  async function toggleSyncedSession(id: string): Promise<void> {
+    const nextId = syncedSessionId === id ? null : id;
+    const res = await bgCall({ type: "SET_SYNC_SELECTION", id: nextId });
+    if (!res.ok) {
+      setError(res.error);
+      return;
+    }
+    setSyncedSessionId(res.syncedSessionId);
   }
 
   async function doSave(): Promise<void> {
@@ -139,7 +160,7 @@ export default function LibraryPage(): JSX.Element {
         <table className="table">
           <thead>
             <tr>
-              <th style={{ width: 44 }}>Fav</th>
+              <th style={{ width: 90 }}>Flags</th>
               <th>Name</th>
               <th>Description</th>
               <th style={{ width: 90 }}>Windows</th>
@@ -152,14 +173,24 @@ export default function LibraryPage(): JSX.Element {
             {visible.map((s) => (
               <tr key={s.id}>
                 <td>
-                  <button
-                    className={s.favorite ? "star on" : "star"}
-                    onClick={() => void toggleFavorite(s.id, !s.favorite)}
-                    aria-label={s.favorite ? "Unfavorite" : "Favorite"}
-                    title={s.favorite ? "Unfavorite" : "Favorite"}
-                  >
-                    {s.favorite ? "★" : "☆"}
-                  </button>
+                  <div className="row-flags">
+                    <button
+                      className={s.favorite ? "star on" : "star"}
+                      onClick={() => void toggleFavorite(s.id, !s.favorite)}
+                      aria-label={s.favorite ? "Unfavorite" : "Favorite"}
+                      title={s.favorite ? "Unfavorite" : "Favorite"}
+                    >
+                      {s.favorite ? "★" : "☆"}
+                    </button>
+                    <button
+                      className={syncedSessionId === s.id ? "sync-mark on" : "sync-mark"}
+                      onClick={() => void toggleSyncedSession(s.id)}
+                      aria-label={syncedSessionId === s.id ? "Unsync session" : "Sync session"}
+                      title={syncedSessionId === s.id ? "Unsync session" : "Mark session for cross-device sync"}
+                    >
+                      ⟳
+                    </button>
+                  </div>
                 </td>
                 <td>
                   <Link to={`/session/${s.id}`} className="link">
@@ -207,4 +238,3 @@ export default function LibraryPage(): JSX.Element {
     </div>
   );
 }
-
