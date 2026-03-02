@@ -10,6 +10,7 @@ Thumbs.db
 node_modules/
 dist/
 build/
+.release/
 test-results/
 playwright-report/
 

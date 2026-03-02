@@ -3,6 +3,10 @@
 Use this only for distribution/review builds.  
 Do not use this for day-to-day local testing.
 
+If you use a secondary public repo for dist-only artifacts, follow:
+
+- `.appdocs/developer/guides/chrome-publish-with-secondary-repo.md`
+
 ## Step 1: Build release artifacts
 
 Command:

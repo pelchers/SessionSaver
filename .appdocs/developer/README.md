@@ -36,6 +36,7 @@ Use this folder for implementation details, local testing flow, and pre-launch a
   - `.appdocs/developer/guides/troubleshooting-vite-dev-mode.md`
   - `.appdocs/developer/guides/chrome-prelaunch-approval.md`
   - `.appdocs/developer/guides/chrome-web-store-upload.md`
+  - `.appdocs/developer/guides/chrome-publish-with-secondary-repo.md`
 
 ## Related Planning Docs
 
