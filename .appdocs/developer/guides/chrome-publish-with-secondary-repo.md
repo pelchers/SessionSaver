@@ -42,33 +42,26 @@ Compress-Archive -Path .\dist\* -DestinationPath .\.release\sessionsaver-upload.
 Why:
 - Produces the exact upload package for CWS.
 
-## Step 3: Sync `dist` to secondary public repo
+## Step 3: Publish `dist` to secondary public repo
 
-Assume:
-
-- Main/private repo: `C:\Extensions\SessionSaver`
-- Secondary/public repo local clone: `C:\Extensions\SessionSaver-dist-public`
-
-Run in PowerShell:
+Use the helper script from the private repo:
 
 ```powershell
-$src = "C:\Extensions\SessionSaver\dist"
-$dst = "C:\Extensions\SessionSaver-dist-public"
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/publish-extension-remote.ps1 `
+  -RemoteName extension `
+  -RemoteUrl git@github.com:pelchers/SessionSaver-Extension.git
+```
 
-if (!(Test-Path $dst)) {
-  throw "Clone the secondary repo first: git clone <secondary-repo-url> $dst"
-}
+If SSH key auth is not configured, set remote URL to HTTPS once and rerun:
 
-Get-ChildItem -Path $dst -Force | Where-Object { $_.Name -notin ".git" } | Remove-Item -Recurse -Force
-Copy-Item -Path "$src\*" -Destination $dst -Recurse -Force
-Set-Location $dst
-git add -A
-git commit -m "chore: publish dist for SessionSaver <version>"
-git push
+```powershell
+git remote set-url extension https://github.com/pelchers/SessionSaver-Extension.git
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/publish-extension-remote.ps1 -RemoteName extension
 ```
 
 Why:
-- Keeps public repo limited to shipped artifact contents only.
+- Publishes a dist-only branch (`public-dist`) to the secondary repo `main` branch.
+- Keeps private source/planning history out of the public repo.
 
 ## Step 4: Upload to Chrome Web Store
 
