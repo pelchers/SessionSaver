@@ -73,6 +73,54 @@ function Resize-Cover([string]$srcPath, [int]$targetW, [int]$targetH, [string]$d
   }
 }
 
+function New-PromoTile([string]$bgPath, [string]$iconPath, [int]$targetW, [int]$targetH, [string]$destPath) {
+  $bg = [System.Drawing.Image]::FromFile($bgPath)
+  $icon = [System.Drawing.Image]::FromFile($iconPath)
+  try {
+    $bmp = New-Object System.Drawing.Bitmap($targetW, $targetH)
+    try {
+      $g = [System.Drawing.Graphics]::FromImage($bmp)
+      try {
+        $g.CompositingQuality = [System.Drawing.Drawing2D.CompositingQuality]::HighQuality
+        $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+        $g.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
+        $g.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
+
+        # Cover-fill with screenshot background.
+        $bgScale = [Math]::Max($targetW / $bg.Width, $targetH / $bg.Height)
+        $bgW = [int][Math]::Round($bg.Width * $bgScale)
+        $bgH = [int][Math]::Round($bg.Height * $bgScale)
+        $bgX = [int][Math]::Floor(($targetW - $bgW) / 2)
+        $bgY = [int][Math]::Floor(($targetH - $bgH) / 2)
+        $g.DrawImage($bg, $bgX, $bgY, $bgW, $bgH)
+
+        # Darken for legibility and stronger contrast in CWS tiles.
+        $overlayBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(130, 0, 0, 0))
+        try {
+          $g.FillRectangle($overlayBrush, 0, 0, $targetW, $targetH)
+        } finally {
+          $overlayBrush.Dispose()
+        }
+
+        # Center icon.
+        $iconTarget = [int][Math]::Round([Math]::Min($targetW, $targetH) * 0.46)
+        if ($iconTarget -lt 96) { $iconTarget = 96 }
+        $iconX = [int][Math]::Floor(($targetW - $iconTarget) / 2)
+        $iconY = [int][Math]::Floor(($targetH - $iconTarget) / 2)
+        $g.DrawImage($icon, $iconX, $iconY, $iconTarget, $iconTarget)
+      } finally {
+        $g.Dispose()
+      }
+      $bmp.Save($destPath, [System.Drawing.Imaging.ImageFormat]::Png)
+    } finally {
+      $bmp.Dispose()
+    }
+  } finally {
+    $bg.Dispose()
+    $icon.Dispose()
+  }
+}
+
 if (!(Test-Path $IconSource)) {
   throw "Icon source not found: $IconSource"
 }
@@ -103,5 +151,13 @@ foreach ($shot in $storyShots) {
 }
 
 Resize-SquareIcon -srcPath $IconSource -size 128 -destPath (Join-Path $OutputDir 'store-icon-128.png')
+
+$promoBg = Join-Path $screen1280Dir 'browse-library-02-library-sorted-by-name.png'
+if (-not (Test-Path $promoBg)) {
+  $promoBg = (Get-ChildItem -File $screen1280Dir | Select-Object -First 1).FullName
+}
+New-PromoTile -bgPath $promoBg -iconPath $IconSource -targetW 440 -targetH 280 -destPath (Join-Path $OutputDir 'promo-small-440x280.png')
+New-PromoTile -bgPath $promoBg -iconPath $IconSource -targetW 920 -targetH 680 -destPath (Join-Path $OutputDir 'promo-large-920x680.png')
+New-PromoTile -bgPath $promoBg -iconPath $IconSource -targetW 1400 -targetH 560 -destPath (Join-Path $OutputDir 'promo-marquee-1400x560.png')
 
 Write-Output "Prepared icons + screenshots in $OutputDir"
