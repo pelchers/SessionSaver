@@ -12,6 +12,7 @@ dist/
 build/
 .release/
 .publish/
+.reference/
 test-results/
 playwright-report/
 

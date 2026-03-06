@@ -42,6 +42,23 @@ Compress-Archive -Path .\dist\* -DestinationPath .\.release\sessionsaver-upload.
 Why:
 - Produces the exact upload package for CWS.
 
+## Step 2.5: Prepare store graphics from local assets
+
+Run:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/prepare-cws-assets.ps1
+```
+
+Outputs:
+
+- `.release/cws-assets/store-icon-128.png`
+- `.release/cws-assets/screenshots-1280x800/*.png`
+- `.release/cws-assets/screenshots-640x400/*.png`
+
+Why:
+- Generates CWS-ready screenshot dimensions and icon assets from the current project state.
+
 ## Step 3: Publish `dist` to secondary public repo
 
 Use the helper script from the private repo:
