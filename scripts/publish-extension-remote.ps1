@@ -104,9 +104,9 @@ This repository is a distribution mirror for the SessionSaver Chrome extension.
 
 ## Build Provenance
 
-- Source branch: `$sourceBranch`
-- Source commit: `$sourceCommit`
-- Published at: `$publishedAt`
+- Source branch: $sourceBranch
+- Source commit: $sourceCommit
+- Published at: $publishedAt
 
 ## Local Load
 
