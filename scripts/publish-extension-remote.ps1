@@ -23,6 +23,7 @@ $distPath = Join-Path $repoRoot "dist"
 if (-not (Test-Path $distPath)) {
   throw "dist/ not found. Run 'npm run build' first."
 }
+$privacyPath = Join-Path $repoRoot "PRIVACY.md"
 
 $remoteExists = $true
 git remote get-url $RemoteName > $null 2>&1
@@ -114,6 +115,10 @@ This repository is a distribution mirror for the SessionSaver Chrome extension.
 2. Enable **Developer mode**.
 3. Click **Load unpacked** and select this repository root.
 "@ | Set-Content README.md
+
+  if (Test-Path $privacyPath) {
+    Copy-Item -Path $privacyPath -Destination (Join-Path $worktreeDir "PRIVACY.md") -Force
+  }
 
   git add -A
   Assert-LastExitCode "stage dist snapshot"
